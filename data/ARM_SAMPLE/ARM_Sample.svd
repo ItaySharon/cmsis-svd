@@ -1,739 +1,2658 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!-- File naming: <vendor>_<part/series name>.svd -->
-
-<!--
-  Copyright (C) 2012 ARM Limited. All rights reserved.
-
-  Purpose: System Viewer Description (SVD) Example (Schema Version 1.0)
-           This is a description of a none-existent and incomplete device
-           for demonstration purposes only.
- -->
- 
-<device schemaVersion="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_0.xsd" >
-  <name>ARMCM3xxx</name>                                          <!-- name of part or part series -->
-  <version>1.0</version>                                          <!-- version of this description -->
-  <description>ARM 32-bit Cortex-M3 Microcontroller based device, CPU clock up to 80MHz, etc. </description>
-  <addressUnitBits>8</addressUnitBits>                            <!-- byte addressable memory -->
-  <width>32</width>                                               <!-- bus width is 32 bits -->
-  <!-- default settings implicitly inherited by subsequent sections -->
-  <size>32</size>                                                 <!-- this is the default size (number of bits) of all peripherals
-                                                                       and register that do not define "size" themselves -->
-  <access>read-write</access>                                     <!-- default access permission for all subsequent registers -->
-  <resetValue>0x00000000</resetValue>                             <!-- by default all bits of the registers are initialized to 0 on reset -->
-  <resetMask>0xFFFFFFFF</resetMask>                               <!-- by default all 32Bits of the registers are used -->
-
-  <peripherals>
-    <!-- Timer 0 -->
-    <peripheral>
-      <name>TIMER0</name>
-      <version>1.0</version>
-      <description>32 Timer / Counter, counting up or down from different sources</description>
-      <groupName>TIMER</groupName>
-      <baseAddress>0x40010000</baseAddress>
-      <size>32</size>
-      <access>read-write</access>
-
-      <addressBlock>
-        <offset>0</offset>
-        <size>0x100</size>
-        <usage>registers</usage>
-      </addressBlock>
-
-      <interrupt>
-        <name>TIMER0</name>
-        <value>0</value>
-      </interrupt>
-
-      <registers>
-      <!-- CR: Control Register -->
-        <register>
-          <name>CR</name>
-          <description>Control Register</description>
-          <addressOffset>0x00</addressOffset>
-          <size>32</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0x1337F7F</resetMask>
-
-          <fields>
-            <!-- EN: Enable -->
-            <field>
-              <name>EN</name>
-              <description>Enable</description>
-              <bitRange>[0:0]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Disable</name>
-                  <description>Timer is disabled and does not operate</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Enable</name>
-                  <description>Timer is enabled and can operate</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- RST: Reset -->
-            <field>
-              <name>RST</name>
-              <description>Reset Timer</description>
-              <bitRange>[1:1]</bitRange>
-              <access>write-only</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Reserved</name>
-                  <description>Write as ZERO if necessary</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Reset_Timer</name>
-                  <description>Reset the Timer</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- CNT: Counting Direction -->
-            <field>
-              <name>CNT</name>
-              <description>Counting direction</description>
-              <bitRange>[3:2]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Count_UP</name>
-                  <description>Timer Counts UO and wraps, if no STOP condition is set</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Count_DOWN</name>
-                  <description>Timer Counts DOWN and wraps, if no STOP condition is set</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Toggle</name>
-                  <description>Timer Counts up to MAX, then DOWN to ZERO, if no STOP condition is set</description>
-                  <value>2</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- MODE: Operation Mode -->
-            <field>
-              <name>MODE</name>
-              <description>Operation Mode</description>
-              <bitRange>[6:4]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Continous</name>
-                  <description>Timer runs continously</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Single_ZERO_MAX</name>
-                  <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT) and stops</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Single_MATCH</name>
-                  <description>Timer counts to the Value of MATCH Register and stops</description>
-                  <value>2</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Reload_ZERO_MAX</name>
-                  <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT), loads the RELOAD Value and continues</description>
-                  <value>3</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Reload_MATCH</name>
-                  <description>Timer counts to the Value of MATCH Register, loads the RELOAD Value and continues</description>
-                  <value>4</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- PSC: Use Prescaler -->
-            <field>
-              <name>PSC</name>
-              <description>Use Prescaler</description>
-              <bitRange>[7:7]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Disabled</name>
-                  <description>Prescaler is not used</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Enabled</name>
-                  <description>Prescaler is used as divider</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- CNTSRC: Timer / Counter Soruce Divider -->
-            <field>
-              <name>CNTSRC</name>
-              <description>Timer / Counter Source Divider</description>
-              <bitRange>[11:8]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>CAP_SRC</name>
-                  <description>Capture Source is used directly</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div2</name>
-                  <description>Capture Source is divided by 2</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div4</name>
-                  <description>Capture Source is divided by 4</description>
-                  <value>2</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div8</name>
-                  <description>Capture Source is divided by 8</description>
-                  <value>3</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div16</name>
-                  <description>Capture Source is divided by 16</description>
-                  <value>4</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div32</name>
-                  <description>Capture Source is divided by 32</description>
-                  <value>5</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div64</name>
-                  <description>Capture Source is divided by 64</description>
-                  <value>6</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div128</name>
-                  <description>Capture Source is divided by 128</description>
-                  <value>7</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>CAP_SRC_div256</name>
-                  <description>Capture Source is divided by 256</description>
-                  <value>8</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- CAPSRC: Timer / COunter Capture Source -->
-            <field>
-              <name>CAPSRC</name>
-              <description>Timer / Counter Capture Source</description>
-              <bitRange>[15:12]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>CClk</name>
-                  <description>Core Clock</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_0</name>
-                  <description>GPIO A, PIN 0</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_1</name>
-                  <description>GPIO A, PIN 1</description>
-                  <value>2</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_2</name>
-                  <description>GPIO A, PIN 2</description>
-                  <value>3</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_3</name>
-                  <description>GPIO A, PIN 3</description>
-                  <value>4</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_4</name>
-                  <description>GPIO A, PIN 4</description>
-                  <value>5</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_5</name>
-                  <description>GPIO A, PIN 5</description>
-                  <value>6</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_6</name>
-                  <description>GPIO A, PIN 6</description>
-                  <value>7</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOA_7</name>
-                  <description>GPIO A, PIN 7</description>
-                  <value>8</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOB_0</name>
-                  <description>GPIO B, PIN 0</description>
-                  <value>9</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOB_1</name>
-                  <description>GPIO B, PIN 1</description>
-                  <value>10</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOB_2</name>
-                  <description>GPIO B, PIN 2</description>
-                  <value>11</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOB_3</name>
-                  <description>GPIO B, PIN 3</description>
-                  <value>12</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOC_0</name>
-                  <description>GPIO C, PIN 0</description>
-                  <value>13</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOC_5</name>
-                  <description>GPIO C, PIN 1</description>
-                  <value>14</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>GPIOC_6</name>
-                  <description>GPIO C, PIN 2</description>
-                  <value>15</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- CAPEDGE: Capture Edge -->
-            <field>
-              <name>CAPEDGE</name>
-              <description>Capture Edge, select which Edge should result in a counter increment or decrement</description>
-              <bitRange>[17:16]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>RISING</name>
-                  <description>Only rising edges result in a counter increment or decrement</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>FALLING</name>
-                  <description>Only falling edges  result in a counter increment or decrement</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>BOTH</name>
-                  <description>Rising and falling edges result in a counter increment or decrement</description>
-                  <value>2</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- TRGEXT: Triggers an other Peripheral -->
-            <field>
-              <name>TRGEXT</name>
-              <description>Triggers an other Peripheral</description>
-              <bitRange>[21:20]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>NONE</name>
-                  <description>No Trigger is emitted</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>DMA1</name>
-                  <description>DMA Controller 1 is triggered, dependant on MODE</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>DMA2</name>
-                  <description>DMA Controller 2 is triggered, dependant on MODE</description>
-                  <value>2</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>UART</name>
-                  <description>UART is triggered, dependant on MODE</description>
-                  <value>3</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- Reload: Selects Reload Register n -->
-            <field>
-              <name>RELOAD</name>
-              <description>Select RELOAD Register n to reload Timer on condition</description>
-              <bitRange>[25:24]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>RELOAD0</name>
-                  <description>Selects Reload Register number 0</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>RELOAD1</name>
-                  <description>Selects Reload Register number 1</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>RELOAD2</name>
-                  <description>Selects Reload Register number 2</description>
-                  <value>2</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>RELOAD3</name>
-                  <description>Selects Reload Register number 3</description>
-                  <value>3</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- IDR: Inc or dec Reload Register Selection -->
-            <field>
-              <name>IDR</name>
-              <description>Selects, if Reload Register number is incremented, decremented or not modified</description>
-              <bitRange>[27:26]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>KEEP</name>
-                  <description>Reload Register number does not change automatically</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>INCREMENT</name>
-                  <description>Reload Register number is incremented on each match</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>DECREMENT</name>
-                  <description>Reload Register number is decremented on each match</description>
-                  <value>2</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- START: Starts / Stops the Timer/Counter -->
-            <field>
-              <name>S</name>
-              <description>Starts and Stops the Timer / Counter</description>
-              <bitRange>[31:31]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>STOP</name>
-                  <description>Timer / Counter is stopped</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>START</name>
-                  <description>Timer / Counter is started</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-          </fields>
-        </register>
-
-        <!-- SR: Status Register -->
-        <register>
-          <name>SR</name>
-          <description>Status Register</description>
-          <addressOffset>0x04</addressOffset>
-          <size>16</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0xD701</resetMask>
-
-          <fields>
-            <!-- RUN: Shows if Timer is running -->
-            <field>
-              <name>RUN</name>
-              <description>Shows if Timer is running or not</description>
-              <bitRange>[0:0]</bitRange>
-              <access>read-only</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Stopped</name>
-                  <description>Timer is not running</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Running</name>
-                  <description>Timer is running</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- MATCH: Shows if a Match was hit -->
-            <field>
-              <name>MATCH</name>
-              <description>Shows if the MATCH was hit</description>
-              <bitRange>[8:8]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>No_Match</name>
-                  <description>The MATCH condition was not hit</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Match_Hit</name>
-                  <description>The MATCH condition was hit</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- UN: Shows if an underflow occured -->
-            <field>
-              <name>UN</name>
-              <description>Shows if an underflow occured. This flag is sticky</description>
-              <bitRange>[9:9]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>No_Underflow</name>
-                  <description>No underflow occured since last clear</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Underflow</name>
-                  <description>A minimum of one underflow occured since last clear</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- OV: Shows if an overflow occured -->
-            <field>
-              <name>OV</name>
-              <description>Shows if an overflow occured. This flag is sticky</description>
-              <bitRange>[10:10]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>No_Overflow</name>
-                  <description>No overflow occured since last clear</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Overflow_occured</name>
-                  <description>A minimum of one overflow occured since last clear</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- RST: Shows if Timer is in RESET state -->
-            <field>
-              <name>RST</name>
-              <description>Shows if Timer is in RESET state</description>
-              <bitRange>[12:12]</bitRange>
-              <access>read-only</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Ready</name>
-                  <description>Timer is not in RESET state and can operate</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>In_Reset</name>
-                  <description>Timer is in RESET state and can not operate</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- RELOAD: Shows the currently active Reload Register -->
-            <field>
-              <name>RELOAD</name>
-              <description>Shows the currently active RELOAD Register</description>
-              <bitRange>[15:14]</bitRange>
-              <access>read-only</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>RELOAD0</name>
-                  <description>Reload Register number 0 is active</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>RELOAD1</name>
-                  <description>Reload Register number 1 is active</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>RELOAD2</name>
-                  <description>Reload Register number 2 is active</description>
-                  <value>2</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>RELOAD3</name>
-                  <description>Reload Register number 3 is active</description>
-                  <value>3</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-          </fields>
-        </register>
-
-        <!-- INT: Interrupt Register -->
-        <register>
-          <name>INT</name>
-          <description>Interrupt Register</description>
-          <addressOffset>0x10</addressOffset>
-          <size>16</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0x0771</resetMask>
-
-          <fields>
-            <!-- EN: Interrupt Enable -->
-            <field>
-              <name>EN</name>
-              <description>Interrupt Enable</description>
-              <bitRange>[0:0]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Disabled</name>
-                  <description>Timer does not generate Interrupts</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Enable</name>
-                  <description>Timer triggers the TIMERn Interrupt</description>
-                  <value>1</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-
-            <!-- MODE: Interrupt Mode -->
-            <field>
-              <name>MODE</name>
-              <description>Interrupt Mode, selects on which condition the Timer should generate an Interrupt</description>
-              <bitRange>[6:4]</bitRange>
-              <access>read-write</access>
-              <enumeratedValues>
-                <enumeratedValue>
-                  <name>Match</name>
-                  <description>Timer generates an Interrupt when the MATCH condition is hit</description>
-                  <value>0</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Underflow</name>
-                  <description>Timer generates an Interrupt when it underflows</description>
-                  <value>1</value>
-                </enumeratedValue>
-                <enumeratedValue>
-                  <name>Overflow</name>
-                  <description>Timer generates an Interrupt when it overflows</description>
-                  <value>2</value>
-                </enumeratedValue>
-              </enumeratedValues>
-            </field>
-          </fields>
-        </register>
-
-        <!-- COUNT: Counter Register -->
-        <register>
-          <name>COUNT</name>
-          <description>The Counter Register reflects the actual Value of the Timer/Counter</description>
-          <addressOffset>0x20</addressOffset>
-          <size>32</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0xFFFFFFFF</resetMask>
-        </register>
-
-        <!-- MATCH: Match Register -->
-        <register>
-          <name>MATCH</name>
-          <description>The Match Register stores the compare Value for the MATCH condition</description>
-          <addressOffset>0x24</addressOffset>
-          <size>32</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0xFFFFFFFF</resetMask>
-        </register>
-        
-        <!-- PRESCALE: Prescale Read Register -->
-        <register>
-          <name>PRESCALE_RD</name>
-          <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
-          <addressOffset>0x28</addressOffset>
-          <size>32</size>
-          <access>read-only</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0xFFFFFFFF</resetMask>
-        </register>
-        
-        <!-- PRESCALE: Prescale Write Register -->
-        <register>
-          <name>PRESCALE_WR</name>
-          <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
-          <addressOffset>0x28</addressOffset>
-          <size>32</size>
-          <access>write-only</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0xFFFFFFFF</resetMask>
-        </register>
-
-
-        <!-- RELOAD: Array of Reload Register with 4 elements-->
-        <register>
-          <dim>4</dim>
-          <dimIncrement>4</dimIncrement>
-          <dimIndex>0,1,2,3</dimIndex>
-          <name>RELOAD[%s]</name>
-          <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
-          <addressOffset>0x50</addressOffset>
-          <size>32</size>
-          <access>read-write</access>
-          <resetValue>0x00000000</resetValue>
-          <resetMask>0xFFFFFFFF</resetMask>
-        </register>
-      </registers>
-    </peripheral>
-
-    <!-- Timer 1 -->
-    <peripheral derivedFrom="TIMER0">
-      <name>TIMER1</name>
-      <baseAddress>0x40010100</baseAddress>
-      <interrupt>
-        <name>TIMER1</name>
-        <value>4</value>
-      </interrupt>
-    </peripheral>
-
-    <!-- Timer 2 -->
-    <peripheral derivedFrom="TIMER0">
-      <name>TIMER2</name>
-      <baseAddress>0x40010200</baseAddress>
-      <interrupt>
-        <name>TIMER2</name>
-        <value>6</value>
-      </interrupt>
-    </peripheral>
-  </peripherals>
-</device>
+<?xml version="1.0" encoding="UTF-8"?>
+<device xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="1.1" xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd"><access>read-write</access>
+<addressUnitBits>0x8</addressUnitBits>
+<cpu>
+  <dcachePresent>
+    <dcachePresen></dcachePresen>
+  </dcachePresent>
+  <dtcmPresent>
+    <dtcmPresen></dtcmPresen>
+  </dtcmPresent>
+  <icachePresent>
+    <icachePresen></icachePresen>
+  </icachePresent>
+  <itcmPresent>
+    <itcmPresen></itcmPresen>
+  </itcmPresent>
+</cpu>
+<description>ARM 32-bit Cortex-M3 Microcontroller based device, CPU clock up to 80MHz, etc. </description>
+<name>ARMCM3xxx</name>
+<peripherals>
+  <peripheral>
+    <access>read-write</access>
+    <addressBlock>
+      <offset>0x0</offset>
+      <size>0x100</size>
+      <usage>registers</usage>
+    </addressBlock>
+    <baseAddress>0x40010000</baseAddress>
+    <description>32 Timer / Counter, counting up or down from different sources</description>
+    <groupName>TIMER</groupName>
+    <interrupts></interrupts>
+    <name>TIMER0</name>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x0</addressOffset>
+        <description>Control Register</description>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Enable</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is disabled and does not operate</description>
+                <name>Disable</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is enabled and can operate</description>
+                <name>Enable</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>EN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>write-only</access>
+            <bitOffset>0x1</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Reset Timer</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Write as ZERO if necessary</description>
+                <name>Reserved</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reset the Timer</description>
+                <name>Reset_Timer</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RST</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x2</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Counting direction</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts UO and wraps, if no STOP condition is set</description>
+                <name>Count_UP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts DOWN and wraps, if no STOP condition is set</description>
+                <name>Count_DOWN</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts up to MAX, then DOWN to ZERO, if no STOP condition is set</description>
+                <name>Toggle</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CNT</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x4</bitOffset>
+            <bitWidth>0x3</bitWidth>
+            <description>Operation Mode</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer runs continously</description>
+                <name>Continous</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT) and stops</description>
+                <name>Single_ZERO_MAX</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to the Value of MATCH Register and stops</description>
+                <name>Single_MATCH</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT), loads the RELOAD Value and continues</description>
+                <name>Reload_ZERO_MAX</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to the Value of MATCH Register, loads the RELOAD Value and continues</description>
+                <name>Reload_MATCH</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MODE</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x7</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Use Prescaler</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Prescaler is not used</description>
+                <name>Disabled</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Prescaler is used as divider</description>
+                <name>Enabled</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>PSC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x8</bitOffset>
+            <bitWidth>0x4</bitWidth>
+            <description>Timer / Counter Source Divider</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is used directly</description>
+                <name>CAP_SRC</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 2</description>
+                <name>CAP_SRC_div2</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 4</description>
+                <name>CAP_SRC_div4</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 8</description>
+                <name>CAP_SRC_div8</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 16</description>
+                <name>CAP_SRC_div16</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 32</description>
+                <name>CAP_SRC_div32</name>
+                <value>0x5</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 64</description>
+                <name>CAP_SRC_div64</name>
+                <value>0x6</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 128</description>
+                <name>CAP_SRC_div128</name>
+                <value>0x7</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 256</description>
+                <name>CAP_SRC_div256</name>
+                <value>0x8</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CNTSRC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0xC</bitOffset>
+            <bitWidth>0x4</bitWidth>
+            <description>Timer / Counter Capture Source</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Core Clock</description>
+                <name>CClk</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 0</description>
+                <name>GPIOA_0</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 1</description>
+                <name>GPIOA_1</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 2</description>
+                <name>GPIOA_2</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 3</description>
+                <name>GPIOA_3</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 4</description>
+                <name>GPIOA_4</name>
+                <value>0x5</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 5</description>
+                <name>GPIOA_5</name>
+                <value>0x6</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 6</description>
+                <name>GPIOA_6</name>
+                <value>0x7</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 7</description>
+                <name>GPIOA_7</name>
+                <value>0x8</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 0</description>
+                <name>GPIOB_0</name>
+                <value>0x9</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 1</description>
+                <name>GPIOB_1</name>
+                <value>0xA</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 2</description>
+                <name>GPIOB_2</name>
+                <value>0xB</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 3</description>
+                <name>GPIOB_3</name>
+                <value>0xC</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 0</description>
+                <name>GPIOC_0</name>
+                <value>0xD</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 1</description>
+                <name>GPIOC_5</name>
+                <value>0xE</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 2</description>
+                <name>GPIOC_6</name>
+                <value>0xF</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CAPSRC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x10</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Capture Edge, select which Edge should result in a counter increment or decrement</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Only rising edges result in a counter increment or decrement</description>
+                <name>RISING</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Only falling edges  result in a counter increment or decrement</description>
+                <name>FALLING</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Rising and falling edges result in a counter increment or decrement</description>
+                <name>BOTH</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CAPEDGE</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x14</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Triggers an other Peripheral</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No Trigger is emitted</description>
+                <name>NONE</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>DMA Controller 1 is triggered, dependant on MODE</description>
+                <name>DMA1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>DMA Controller 2 is triggered, dependant on MODE</description>
+                <name>DMA2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>UART is triggered, dependant on MODE</description>
+                <name>UART</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>TRGEXT</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x18</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Select RELOAD Register n to reload Timer on condition</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 0</description>
+                <name>RELOAD0</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 1</description>
+                <name>RELOAD1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 2</description>
+                <name>RELOAD2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 3</description>
+                <name>RELOAD3</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RELOAD</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x1A</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Selects, if Reload Register number is incremented, decremented or not modified</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number does not change automatically</description>
+                <name>KEEP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number is incremented on each match</description>
+                <name>INCREMENT</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number is decremented on each match</description>
+                <name>DECREMENT</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>IDR</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x1F</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Starts and Stops the Timer / Counter</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer / Counter is stopped</description>
+                <name>STOP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer / Counter is started</description>
+                <name>START</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>S</name>
+          </field>
+        </fields>
+        <name>CR</name>
+        <resetMask>0x1337F7F</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x4</addressOffset>
+        <description>Status Register</description>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if Timer is running or not</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is not running</description>
+                <name>Stopped</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is running</description>
+                <name>Running</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RUN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x8</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if the MATCH was hit</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>The MATCH condition was not hit</description>
+                <name>No_Match</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>The MATCH condition was hit</description>
+                <name>Match_Hit</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MATCH</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x9</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if an underflow occured. This flag is sticky</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No underflow occured since last clear</description>
+                <name>No_Underflow</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>A minimum of one underflow occured since last clear</description>
+                <name>Underflow</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>UN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0xA</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if an overflow occured. This flag is sticky</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No overflow occured since last clear</description>
+                <name>No_Overflow</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>A minimum of one overflow occured since last clear</description>
+                <name>Overflow_occured</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>OV</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0xC</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if Timer is in RESET state</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is not in RESET state and can operate</description>
+                <name>Ready</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is in RESET state and can not operate</description>
+                <name>In_Reset</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RST</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0xE</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Shows the currently active RELOAD Register</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 0 is active</description>
+                <name>RELOAD0</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 1 is active</description>
+                <name>RELOAD1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 2 is active</description>
+                <name>RELOAD2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 3 is active</description>
+                <name>RELOAD3</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RELOAD</name>
+          </field>
+        </fields>
+        <name>SR</name>
+        <resetMask>0xD701</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x10</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x10</addressOffset>
+        <description>Interrupt Register</description>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Interrupt Enable</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer does not generate Interrupts</description>
+                <name>Disabled</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer triggers the TIMERn Interrupt</description>
+                <name>Enable</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>EN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x4</bitOffset>
+            <bitWidth>0x3</bitWidth>
+            <description>Interrupt Mode, selects on which condition the Timer should generate an Interrupt</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when the MATCH condition is hit</description>
+                <name>Match</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when it underflows</description>
+                <name>Underflow</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when it overflows</description>
+                <name>Overflow</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MODE</name>
+          </field>
+        </fields>
+        <name>INT</name>
+        <resetMask>0x771</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x10</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x20</addressOffset>
+        <description>The Counter Register reflects the actual Value of the Timer/Counter</description>
+        <fields></fields>
+        <name>COUNT</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x24</addressOffset>
+        <description>The Match Register stores the compare Value for the MATCH condition</description>
+        <fields></fields>
+        <name>MATCH</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-only</access>
+        <addressOffset>0x28</addressOffset>
+        <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
+        <fields></fields>
+        <name>PRESCALE_RD</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>write-only</access>
+        <addressOffset>0x28</addressOffset>
+        <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
+        <fields></fields>
+        <name>PRESCALE_WR</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x50</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[0]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x54</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[1]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x58</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[2]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x5C</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[3]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <resetMask>0xFFFFFFFF</resetMask>
+    <resetValue>0x0</resetValue>
+    <size>0x20</size>
+    <version>1.0</version>
+  </peripheral>
+</peripherals>
+<peripherals>
+  <peripheral>
+    <access>read-write</access>
+    <addressBlock>
+      <offset>0x0</offset>
+      <size>0x100</size>
+      <usage>registers</usage>
+    </addressBlock>
+    <baseAddress>0x40010100</baseAddress>
+    <description>32 Timer / Counter, counting up or down from different sources</description>
+    <groupName>TIMER</groupName>
+    <interrupts></interrupts>
+    <name>TIMER1</name>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x0</addressOffset>
+        <description>Control Register</description>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Enable</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is disabled and does not operate</description>
+                <name>Disable</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is enabled and can operate</description>
+                <name>Enable</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>EN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>write-only</access>
+            <bitOffset>0x1</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Reset Timer</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Write as ZERO if necessary</description>
+                <name>Reserved</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reset the Timer</description>
+                <name>Reset_Timer</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RST</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x2</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Counting direction</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts UO and wraps, if no STOP condition is set</description>
+                <name>Count_UP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts DOWN and wraps, if no STOP condition is set</description>
+                <name>Count_DOWN</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts up to MAX, then DOWN to ZERO, if no STOP condition is set</description>
+                <name>Toggle</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CNT</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x4</bitOffset>
+            <bitWidth>0x3</bitWidth>
+            <description>Operation Mode</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer runs continously</description>
+                <name>Continous</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT) and stops</description>
+                <name>Single_ZERO_MAX</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to the Value of MATCH Register and stops</description>
+                <name>Single_MATCH</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT), loads the RELOAD Value and continues</description>
+                <name>Reload_ZERO_MAX</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to the Value of MATCH Register, loads the RELOAD Value and continues</description>
+                <name>Reload_MATCH</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MODE</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x7</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Use Prescaler</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Prescaler is not used</description>
+                <name>Disabled</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Prescaler is used as divider</description>
+                <name>Enabled</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>PSC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x8</bitOffset>
+            <bitWidth>0x4</bitWidth>
+            <description>Timer / Counter Source Divider</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is used directly</description>
+                <name>CAP_SRC</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 2</description>
+                <name>CAP_SRC_div2</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 4</description>
+                <name>CAP_SRC_div4</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 8</description>
+                <name>CAP_SRC_div8</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 16</description>
+                <name>CAP_SRC_div16</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 32</description>
+                <name>CAP_SRC_div32</name>
+                <value>0x5</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 64</description>
+                <name>CAP_SRC_div64</name>
+                <value>0x6</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 128</description>
+                <name>CAP_SRC_div128</name>
+                <value>0x7</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 256</description>
+                <name>CAP_SRC_div256</name>
+                <value>0x8</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CNTSRC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0xC</bitOffset>
+            <bitWidth>0x4</bitWidth>
+            <description>Timer / Counter Capture Source</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Core Clock</description>
+                <name>CClk</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 0</description>
+                <name>GPIOA_0</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 1</description>
+                <name>GPIOA_1</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 2</description>
+                <name>GPIOA_2</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 3</description>
+                <name>GPIOA_3</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 4</description>
+                <name>GPIOA_4</name>
+                <value>0x5</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 5</description>
+                <name>GPIOA_5</name>
+                <value>0x6</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 6</description>
+                <name>GPIOA_6</name>
+                <value>0x7</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 7</description>
+                <name>GPIOA_7</name>
+                <value>0x8</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 0</description>
+                <name>GPIOB_0</name>
+                <value>0x9</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 1</description>
+                <name>GPIOB_1</name>
+                <value>0xA</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 2</description>
+                <name>GPIOB_2</name>
+                <value>0xB</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 3</description>
+                <name>GPIOB_3</name>
+                <value>0xC</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 0</description>
+                <name>GPIOC_0</name>
+                <value>0xD</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 1</description>
+                <name>GPIOC_5</name>
+                <value>0xE</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 2</description>
+                <name>GPIOC_6</name>
+                <value>0xF</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CAPSRC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x10</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Capture Edge, select which Edge should result in a counter increment or decrement</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Only rising edges result in a counter increment or decrement</description>
+                <name>RISING</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Only falling edges  result in a counter increment or decrement</description>
+                <name>FALLING</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Rising and falling edges result in a counter increment or decrement</description>
+                <name>BOTH</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CAPEDGE</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x14</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Triggers an other Peripheral</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No Trigger is emitted</description>
+                <name>NONE</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>DMA Controller 1 is triggered, dependant on MODE</description>
+                <name>DMA1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>DMA Controller 2 is triggered, dependant on MODE</description>
+                <name>DMA2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>UART is triggered, dependant on MODE</description>
+                <name>UART</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>TRGEXT</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x18</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Select RELOAD Register n to reload Timer on condition</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 0</description>
+                <name>RELOAD0</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 1</description>
+                <name>RELOAD1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 2</description>
+                <name>RELOAD2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 3</description>
+                <name>RELOAD3</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RELOAD</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x1A</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Selects, if Reload Register number is incremented, decremented or not modified</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number does not change automatically</description>
+                <name>KEEP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number is incremented on each match</description>
+                <name>INCREMENT</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number is decremented on each match</description>
+                <name>DECREMENT</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>IDR</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x1F</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Starts and Stops the Timer / Counter</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer / Counter is stopped</description>
+                <name>STOP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer / Counter is started</description>
+                <name>START</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>S</name>
+          </field>
+        </fields>
+        <name>CR</name>
+        <resetMask>0x1337F7F</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x4</addressOffset>
+        <description>Status Register</description>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if Timer is running or not</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is not running</description>
+                <name>Stopped</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is running</description>
+                <name>Running</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RUN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x8</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if the MATCH was hit</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>The MATCH condition was not hit</description>
+                <name>No_Match</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>The MATCH condition was hit</description>
+                <name>Match_Hit</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MATCH</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x9</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if an underflow occured. This flag is sticky</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No underflow occured since last clear</description>
+                <name>No_Underflow</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>A minimum of one underflow occured since last clear</description>
+                <name>Underflow</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>UN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0xA</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if an overflow occured. This flag is sticky</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No overflow occured since last clear</description>
+                <name>No_Overflow</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>A minimum of one overflow occured since last clear</description>
+                <name>Overflow_occured</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>OV</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0xC</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if Timer is in RESET state</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is not in RESET state and can operate</description>
+                <name>Ready</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is in RESET state and can not operate</description>
+                <name>In_Reset</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RST</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0xE</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Shows the currently active RELOAD Register</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 0 is active</description>
+                <name>RELOAD0</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 1 is active</description>
+                <name>RELOAD1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 2 is active</description>
+                <name>RELOAD2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 3 is active</description>
+                <name>RELOAD3</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RELOAD</name>
+          </field>
+        </fields>
+        <name>SR</name>
+        <resetMask>0xD701</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x10</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x10</addressOffset>
+        <description>Interrupt Register</description>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Interrupt Enable</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer does not generate Interrupts</description>
+                <name>Disabled</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer triggers the TIMERn Interrupt</description>
+                <name>Enable</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>EN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x4</bitOffset>
+            <bitWidth>0x3</bitWidth>
+            <description>Interrupt Mode, selects on which condition the Timer should generate an Interrupt</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when the MATCH condition is hit</description>
+                <name>Match</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when it underflows</description>
+                <name>Underflow</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when it overflows</description>
+                <name>Overflow</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MODE</name>
+          </field>
+        </fields>
+        <name>INT</name>
+        <resetMask>0x771</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x10</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x20</addressOffset>
+        <description>The Counter Register reflects the actual Value of the Timer/Counter</description>
+        <fields></fields>
+        <name>COUNT</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x24</addressOffset>
+        <description>The Match Register stores the compare Value for the MATCH condition</description>
+        <fields></fields>
+        <name>MATCH</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-only</access>
+        <addressOffset>0x28</addressOffset>
+        <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
+        <fields></fields>
+        <name>PRESCALE_RD</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>write-only</access>
+        <addressOffset>0x28</addressOffset>
+        <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
+        <fields></fields>
+        <name>PRESCALE_WR</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x50</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[0]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x54</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[1]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x58</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[2]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x5C</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[3]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x50</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[0]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x54</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[1]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x58</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[2]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x5C</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[3]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <resetMask>0xFFFFFFFF</resetMask>
+    <resetValue>0x0</resetValue>
+    <size>0x20</size>
+    <version>1.0</version>
+  </peripheral>
+</peripherals>
+<peripherals>
+  <peripheral>
+    <access>read-write</access>
+    <addressBlock>
+      <offset>0x0</offset>
+      <size>0x100</size>
+      <usage>registers</usage>
+    </addressBlock>
+    <baseAddress>0x40010200</baseAddress>
+    <description>32 Timer / Counter, counting up or down from different sources</description>
+    <groupName>TIMER</groupName>
+    <interrupts></interrupts>
+    <name>TIMER2</name>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x0</addressOffset>
+        <description>Control Register</description>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Enable</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is disabled and does not operate</description>
+                <name>Disable</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is enabled and can operate</description>
+                <name>Enable</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>EN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>write-only</access>
+            <bitOffset>0x1</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Reset Timer</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Write as ZERO if necessary</description>
+                <name>Reserved</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reset the Timer</description>
+                <name>Reset_Timer</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RST</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x2</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Counting direction</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts UO and wraps, if no STOP condition is set</description>
+                <name>Count_UP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts DOWN and wraps, if no STOP condition is set</description>
+                <name>Count_DOWN</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer Counts up to MAX, then DOWN to ZERO, if no STOP condition is set</description>
+                <name>Toggle</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CNT</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x4</bitOffset>
+            <bitWidth>0x3</bitWidth>
+            <description>Operation Mode</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer runs continously</description>
+                <name>Continous</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT) and stops</description>
+                <name>Single_ZERO_MAX</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to the Value of MATCH Register and stops</description>
+                <name>Single_MATCH</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to 0x00 or 0xFFFFFFFF (depending on CNT), loads the RELOAD Value and continues</description>
+                <name>Reload_ZERO_MAX</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer counts to the Value of MATCH Register, loads the RELOAD Value and continues</description>
+                <name>Reload_MATCH</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MODE</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x7</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Use Prescaler</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Prescaler is not used</description>
+                <name>Disabled</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Prescaler is used as divider</description>
+                <name>Enabled</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>PSC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x8</bitOffset>
+            <bitWidth>0x4</bitWidth>
+            <description>Timer / Counter Source Divider</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is used directly</description>
+                <name>CAP_SRC</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 2</description>
+                <name>CAP_SRC_div2</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 4</description>
+                <name>CAP_SRC_div4</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 8</description>
+                <name>CAP_SRC_div8</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 16</description>
+                <name>CAP_SRC_div16</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 32</description>
+                <name>CAP_SRC_div32</name>
+                <value>0x5</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 64</description>
+                <name>CAP_SRC_div64</name>
+                <value>0x6</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 128</description>
+                <name>CAP_SRC_div128</name>
+                <value>0x7</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Capture Source is divided by 256</description>
+                <name>CAP_SRC_div256</name>
+                <value>0x8</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CNTSRC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0xC</bitOffset>
+            <bitWidth>0x4</bitWidth>
+            <description>Timer / Counter Capture Source</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Core Clock</description>
+                <name>CClk</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 0</description>
+                <name>GPIOA_0</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 1</description>
+                <name>GPIOA_1</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 2</description>
+                <name>GPIOA_2</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 3</description>
+                <name>GPIOA_3</name>
+                <value>0x4</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 4</description>
+                <name>GPIOA_4</name>
+                <value>0x5</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 5</description>
+                <name>GPIOA_5</name>
+                <value>0x6</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 6</description>
+                <name>GPIOA_6</name>
+                <value>0x7</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO A, PIN 7</description>
+                <name>GPIOA_7</name>
+                <value>0x8</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 0</description>
+                <name>GPIOB_0</name>
+                <value>0x9</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 1</description>
+                <name>GPIOB_1</name>
+                <value>0xA</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 2</description>
+                <name>GPIOB_2</name>
+                <value>0xB</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO B, PIN 3</description>
+                <name>GPIOB_3</name>
+                <value>0xC</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 0</description>
+                <name>GPIOC_0</name>
+                <value>0xD</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 1</description>
+                <name>GPIOC_5</name>
+                <value>0xE</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>GPIO C, PIN 2</description>
+                <name>GPIOC_6</name>
+                <value>0xF</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CAPSRC</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x10</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Capture Edge, select which Edge should result in a counter increment or decrement</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Only rising edges result in a counter increment or decrement</description>
+                <name>RISING</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Only falling edges  result in a counter increment or decrement</description>
+                <name>FALLING</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Rising and falling edges result in a counter increment or decrement</description>
+                <name>BOTH</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>CAPEDGE</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x14</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Triggers an other Peripheral</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No Trigger is emitted</description>
+                <name>NONE</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>DMA Controller 1 is triggered, dependant on MODE</description>
+                <name>DMA1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>DMA Controller 2 is triggered, dependant on MODE</description>
+                <name>DMA2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>UART is triggered, dependant on MODE</description>
+                <name>UART</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>TRGEXT</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x18</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Select RELOAD Register n to reload Timer on condition</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 0</description>
+                <name>RELOAD0</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 1</description>
+                <name>RELOAD1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 2</description>
+                <name>RELOAD2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Selects Reload Register number 3</description>
+                <name>RELOAD3</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RELOAD</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x1A</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Selects, if Reload Register number is incremented, decremented or not modified</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number does not change automatically</description>
+                <name>KEEP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number is incremented on each match</description>
+                <name>INCREMENT</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number is decremented on each match</description>
+                <name>DECREMENT</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>IDR</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x1F</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Starts and Stops the Timer / Counter</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer / Counter is stopped</description>
+                <name>STOP</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer / Counter is started</description>
+                <name>START</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>S</name>
+          </field>
+        </fields>
+        <name>CR</name>
+        <resetMask>0x1337F7F</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x4</addressOffset>
+        <description>Status Register</description>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if Timer is running or not</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is not running</description>
+                <name>Stopped</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is running</description>
+                <name>Running</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RUN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x8</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if the MATCH was hit</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>The MATCH condition was not hit</description>
+                <name>No_Match</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>The MATCH condition was hit</description>
+                <name>Match_Hit</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MATCH</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x9</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if an underflow occured. This flag is sticky</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No underflow occured since last clear</description>
+                <name>No_Underflow</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>A minimum of one underflow occured since last clear</description>
+                <name>Underflow</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>UN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0xA</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if an overflow occured. This flag is sticky</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>No overflow occured since last clear</description>
+                <name>No_Overflow</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>A minimum of one overflow occured since last clear</description>
+                <name>Overflow_occured</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>OV</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0xC</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Shows if Timer is in RESET state</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is not in RESET state and can operate</description>
+                <name>Ready</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer is in RESET state and can not operate</description>
+                <name>In_Reset</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RST</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-only</access>
+            <bitOffset>0xE</bitOffset>
+            <bitWidth>0x2</bitWidth>
+            <description>Shows the currently active RELOAD Register</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 0 is active</description>
+                <name>RELOAD0</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 1 is active</description>
+                <name>RELOAD1</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 2 is active</description>
+                <name>RELOAD2</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Reload Register number 3 is active</description>
+                <name>RELOAD3</name>
+                <value>0x3</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>RELOAD</name>
+          </field>
+        </fields>
+        <name>SR</name>
+        <resetMask>0xD701</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x10</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x10</addressOffset>
+        <description>Interrupt Register</description>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x0</bitOffset>
+            <bitWidth>0x1</bitWidth>
+            <description>Interrupt Enable</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer does not generate Interrupts</description>
+                <name>Disabled</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer triggers the TIMERn Interrupt</description>
+                <name>Enable</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>EN</name>
+          </field>
+        </fields>
+        <fields>
+          <field>
+            <access>read-write</access>
+            <bitOffset>0x4</bitOffset>
+            <bitWidth>0x3</bitWidth>
+            <description>Interrupt Mode, selects on which condition the Timer should generate an Interrupt</description>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when the MATCH condition is hit</description>
+                <name>Match</name>
+                <value>0x0</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when it underflows</description>
+                <name>Underflow</name>
+                <value>0x1</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <enumeratedValues>
+              <enumeratedValue>
+                <description>Timer generates an Interrupt when it overflows</description>
+                <name>Overflow</name>
+                <value>0x2</value>
+              </enumeratedValue>
+            </enumeratedValues>
+            <name>MODE</name>
+          </field>
+        </fields>
+        <name>INT</name>
+        <resetMask>0x771</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x10</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x20</addressOffset>
+        <description>The Counter Register reflects the actual Value of the Timer/Counter</description>
+        <fields></fields>
+        <name>COUNT</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x24</addressOffset>
+        <description>The Match Register stores the compare Value for the MATCH condition</description>
+        <fields></fields>
+        <name>MATCH</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-only</access>
+        <addressOffset>0x28</addressOffset>
+        <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
+        <fields></fields>
+        <name>PRESCALE_RD</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>write-only</access>
+        <addressOffset>0x28</addressOffset>
+        <description>The Prescale Register stores the Value for the prescaler. The cont event gets divided by this value</description>
+        <fields></fields>
+        <name>PRESCALE_WR</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x50</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[0]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x54</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[1]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x58</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[2]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x5C</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[3]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x50</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[0]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x54</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[1]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x58</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[2]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <registers>
+      <register>
+        <access>read-write</access>
+        <addressOffset>0x5C</addressOffset>
+        <description>The Reload Register stores the Value the COUNT Register gets reloaded on a when a condition was met.</description>
+        <fields></fields>
+        <name>RELOAD[3]</name>
+        <resetMask>0xFFFFFFFF</resetMask>
+        <resetValue>0x0</resetValue>
+        <size>0x20</size>
+      </register>
+    </registers>
+    <resetMask>0xFFFFFFFF</resetMask>
+    <resetValue>0x0</resetValue>
+    <size>0x20</size>
+    <version>1.0</version>
+  </peripheral>
+</peripherals>
+<resetMask>0xFFFFFFFF</resetMask>
+<resetValue>0x0</resetValue>
+<size>0x20</size>
+<version>1.0</version>
+<width>0x20</width></device>
